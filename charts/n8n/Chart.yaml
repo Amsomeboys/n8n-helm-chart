@@ -30,6 +30,10 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: valkey.enabled
 
+  - name: postgresql
+    version: "14.0.0"
+    repository: "https://charts.bitnami.com/bitnami"
+
 annotations:
   artifacthub.io/prerelease: "false"
   # supported kinds are added, changed, deprecated, removed, fixed and security.

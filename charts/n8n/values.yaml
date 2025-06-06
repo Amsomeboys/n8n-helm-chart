@@ -25,7 +25,8 @@ nameOverride:
 fullnameOverride:
 
 # Add entries to a pod's /etc/hosts file, mapping custom IP addresses to hostnames.
-hostAliases: []
+hostAliases:
+  []
   # - ip: 8.8.8.8
   #   hostnames:
   #     - service-example.local
@@ -33,24 +34,33 @@ hostAliases: []
 # Ingress
 #
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   # define a custom ingress class Name, like "traefik" or "nginx"
   className: ""
+
   hosts:
-    - host: workflow.example.com
-      paths: []
+    - host: n8n.develop.witsawa.com
+      paths:
+        - path: /
+          pathType: Prefix
+
   tls:
     - hosts:
-        - workflow.example.com
-      secretName: host-domain-cert
+        - n8n.develop.witsawa.com
+      secretName: n8n-cert
 
 # the main (n8n) application related configuration + Kubernetes specific settings
 # The config: {} dictionary is converted to environmental variables in the ConfigMap.
 main:
   # See https://docs.n8n.io/hosting/configuration/environment-variables/ for all values.
-  config: {}
-  #    n8n:
+  config:
+    n8n:
+      editor_base_url: "https://n8n.develop.witsawa.com"
+      webhook_url: "https://n8n.develop.witsawa.com"
   #    db:
   #      type: postgresdb
   #      postgresdb:
@@ -120,7 +130,6 @@ main:
   #    - name: db-ca-cert
   #      mountPath: /etc/ssl/certs/postgresql
   #      readOnly: true
-
 
   # Number of desired pods. More than one pod is supported in n8n enterprise.
   replicaCount: 1
@@ -227,7 +236,6 @@ main:
   #      volumeMounts:
   #        - name: data
   #          mountPath: /home/node/.n8n
-
 
   service:
     enabled: true
@@ -461,7 +469,6 @@ webhook:
   extraEnv: {}
   #   WEBHOOK_URL:
   #   value: "http://webhook.domain.tld"
-
 
   #
   # Webhook Kubernetes specific settings
